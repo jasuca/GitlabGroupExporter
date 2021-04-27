@@ -53,13 +53,13 @@ def validate_group_exists():
     Validate that the group name that we put to the imported group does not exist in the new instance
     '''
     gl_new = new_config_credentials()
-    new_url = get_config()['NEW_GITLAB_URL']
+    new_url = get_config()['destination']['gitlab_url']
     
     logging.info(f"🔧 - Validationg if group exists")
-    listGroups = gl_new.groups.list(search=get_config()["NEW_GROUP_NAME"])    
+    listGroups = gl_new.groups.list(search=get_config()["destination"]["group_name"])    
     for group in listGroups:
-        if group.attributes['parent_id'] is None and get_config()["NEW_GROUP_NAME"].lower().replace(" ", "") == group.attributes['path']:
-            raise GroupExists(get_config()["NEW_GROUP_NAME"],new_url)
+        if group.attributes['parent_id'] is None and get_config()["destination"]["group_name"].lower().replace(" ", "") == group.attributes['path']:
+            raise GroupExists(get_config()["destination"]["group_name"],new_url)
     logging.info(f"🆗 - Group don't exists on new instance. Then, can be created")
 
 def validate(path): 

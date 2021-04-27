@@ -131,3 +131,7 @@ dmypy.json
 # Configuration file of this project
 config.yml*
 config.yaml*
+
+#temp files
+/tmp*
+.DS_Store

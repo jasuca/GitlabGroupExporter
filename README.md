@@ -25,21 +25,26 @@ vim config.yml
 ```
 
 ```yaml
-OLD_GITLAB_URL: https://oldgitlab.com
-OLD_TOKEN: XXXX
-NEW_GITLAB_URL: http://newgitlab.com
-NEW_TOKEN: XXXXX
-OLD_GROUP_ID: XXXXX
-NEW_GROUP_NAME: MyNewImportedGroup
+origin:
+  gitlab_url: https://oldgitlab.com
+  token: XXXX
+  group_id: 2
+  skip_projects:
+    - RRR
+    - WWWW
+destination:
+  gitlab_url: http://newgitlab.com
+  token: XXXX
+  group_name: ZZZZZ
 ```
 
 ### Variables description
- * **OLD_GITLAB_URL**: Gitlab url from you want to export the group
- * **OLD_TOKEN**: Gitlab token with API access from old gitlab instance
- * **NEW_GITLAB_URL**: Gitlab url where you want to import that new group
- * **NEW_TOKEN**: Gitlab token with API access from new gitlab instance
- * **OLD_GROUP_ID**: Group Id from the group that you want to export (on old gitlab instance)
- * **NEW_GROUP_NAME**: New group name that you will create (import) over that new gitlab instance
+ * **origin:gitlab_url**: Gitlab url from you want to export the group
+ * **origin:token**: Gitlab token with API access from old gitlab instance
+ * **destination:gitlab_url**: Gitlab url where you want to import that new group
+ * **destination:token**: Gitlab token with API access from new gitlab instance
+ * **origin:group_id**: Group Id from the group that you want to export (on old gitlab instance)
+ * **destination:group_name**: New group name that you will create (import) over that new gitlab instance
 
 ## Example command  
 
@@ -81,5 +86,7 @@ rmdir /tmp/gitlab
 * This code written in python possibly has many unanticipated improvements. It is not a program designed at a productive level contemplating all the possible errors that may exist.
 
 * It is only a functional program designed to automate.
+
+* This code is build on top of GitLab API. Learn more on their [Docs](https://python-gitlab.readthedocs.io/)
 
 * As for the python code itself, possible improvements are welcome. I am not a 100% experienced python programmer, but I am having fun. Enjoy :)

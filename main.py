@@ -49,7 +49,7 @@ def main():
 
     # Export group structure
     logging.info("🔧 - Exporting group structure")
-    group_export_import(get_config()["OLD_GROUP_ID"],args.path_dir)
+    group_export_import(get_config()["origin"]["group_id"],args.path_dir)
     
     logging.info("🔧 - Exporting projects")
     migrate_projects(args.path_dir)

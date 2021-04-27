@@ -1,33 +1,87 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "required": ["NEW_GITLAB_URL", "NEW_TOKEN", "OLD_GITLAB_URL", "OLD_TOKEN"],
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome10",
     "title": "gitlab_group_exporter",
-    "properties": {
-        "NEW_GITLAB_URL": {
-            "type": "string",
-            "description": "Gitlab url where group will be imported"
+    "definitions": {
+        "Welcome10": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "origin": {
+                    "$ref": "#/definitions/Origin"
+                },
+                "destination": {
+                    "$ref": "#/definitions/Destination"
+                }
+            },
+            "required": [
+                "destination",
+                "origin"
+            ],
+            "title": "Welcome10"
         },
-        "NEW_TOKEN": {
-            "type": "string",
-            "description": "Gitlab token from new url"
+        "Destination": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "gitlab_url": {
+                    "type": "string",
+                    "description": "Gitlab url where group will be imported",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "token": {
+                    "type": "string",
+                    "description": "Gitlab token from new url"
+                },
+                "group_name": {
+                    "type": "string",
+                    "description": "Gitlab new group name that will be imported/created"
+                }
+            },
+            "required": [
+                "gitlab_url",
+                "group_name",
+                "token"
+            ],
+            "title": "Destination"
         },
-        "OLD_GITLAB_URL": {
-            "type": "string",
-            "description": "Gitlab url where group will be exported"
-        },
-        "OLD_TOKEN": {
-            "type": "string",
-            "description": "Gitlab token from old url"
-        },
-        "OLD_GROUP_ID": {
-           "type": "number",
-            "description": "Gitlab group id. Group id that you want to export"
-        },
-        "NEW_GROUP_NAME": {
-            "type": "string",
-            "description": "Gitlab new group name that will be imported/created"
+        "Origin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "gitlab_url": {
+                    "type": "string",
+                    "description": "Gitlab url where group will be exported",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ]
+                },
+                "token": {
+                    "type": "string",
+                    "description": "Gitlab token from origin url"
+                },
+                "group_id": {
+                    "type": "integer",
+                    "description": "Gitlab group id. Group id that you want to export"
+                },
+                "skip_projects": {
+                    "type": "array",
+                    "description": "List of project names you want to skip",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "gitlab_url",
+                "group_id",
+                "token"
+            ],
+            "title": "Origin"
         }
-    },
-    "additionalProperties": false
-} 
+    }
+}

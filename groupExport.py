@@ -10,8 +10,8 @@ urllib3.disable_warnings()
 gl_old = old_config_credentials()
 gl_new = new_config_credentials()
 
-old_url = get_config()['OLD_GITLAB_URL']
-new_url = get_config()['NEW_GITLAB_URL']
+old_url = get_config()['origin']["gitlab_url"]
+new_url = get_config()['destination']["gitlab_url"]
 
 def group_export_import(groupId,path):
     '''
@@ -31,15 +31,15 @@ def group_export_import(groupId,path):
     ## Import group
     logging.info(f"🔧 - Importing {group.name} in {new_url}")
     with open(f'{path}/{group.name}.tar.gz', 'rb') as f:
-        gl_new.groups.import_group(f, path=get_config()["NEW_GROUP_NAME"].lower().replace(" ", "") ,name=get_config()["NEW_GROUP_NAME"])
+        gl_new.groups.import_group(f, path=get_config()["destination"]["group_name"].lower().replace(" ", "") ,name=get_config()["destination"]["group_name"])
     logging.info(f"🆗 - Group {group.name} imported correctly in {new_url}")
 
 def get_new_group_id():
     '''
     When we import the group into the new gitlab instance, we retrieve the id of the new created group
     '''
-    listGroups = gl_new.groups.list(search=get_config()["NEW_GROUP_NAME"])  
+    listGroups = gl_new.groups.list(search=get_config()["destination"]["group_name"])  
     for group in listGroups:
         if group.attributes['parent_id'] is None:
-            if get_config()["NEW_GROUP_NAME"].lower().replace(" ", "") == group.attributes['path']:
+            if get_config()["destination"]["group_name"].lower().replace(" ", "") == group.attributes['path']:
                 return group.attributes['id']

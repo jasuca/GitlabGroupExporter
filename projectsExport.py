@@ -20,14 +20,22 @@ def project_export_import(oldGroupId,path,newGroupId):
     Export project from groupId on old gitlab instance. Then import into the new gitlab instance in the respective group
     '''
     group = gl_old.groups.get(oldGroupId)
-    projects = group.projects.list()
+    projects = group.projects.list(all=True, sort="asc", archived=0)
     
-    old_url = get_config()['OLD_GITLAB_URL']
-    new_url = get_config()['NEW_GITLAB_URL']
+    old_url = get_config()['origin']["gitlab_url"]
+    new_url = get_config()['destination']["gitlab_url"]
+    projects_to_skip = get_config()['origin']["skip_projects"] or []
 
     for project in projects:
+        # Skip some projects
+        if project.name in projects_to_skip:
+            logging.info(f"🔧 - ⚠️ Skiping project {project.name} from {old_url}")
+            logging.info("⏭ - Next project")
+            continue
+
         p = gl_old.projects.get(project.id)
         logging.info(f"🔧 - Exporting project {project.name} from {old_url}")
+
         export = p.exports.create()
     
         # Wait for the 'finished' status
@@ -47,6 +55,7 @@ def project_export_import(oldGroupId,path,newGroupId):
         while project_import.import_status != 'finished':
             time.sleep(1)
             project_import.refresh()
+        
         logging.info("🆗 - Next project")
 
 def get_old_subgroups(oldGroupId):
@@ -81,10 +90,11 @@ def migrate_projects(path):
     Encapsulate project migration functions
     '''
     # First migrate projects from parent group
-    get_old_subgroups(get_config()["OLD_GROUP_ID"])
+    get_old_subgroups(get_config()["origin"]["group_id"])
     get_new_subgroups(get_new_group_id())
-    project_export_import(get_config()["OLD_GROUP_ID"],path,get_new_group_id())
+    project_export_import(get_config()["origin"]["group_id"],path,get_new_group_id())
     
     # Then, migrate projects from subgroups
     for k, v in old_projects_ids.items():
-        project_export_import(v,path,new_projects_ids[k])
+        print(k, v)
+        # project_export_import(v,path,new_projects_ids[k])
